@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Intelligent Code Editor</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../style.css" />
+
+    <style>
+      #testcases {
+        display: flex;
+        justify-content: space-evenly;
+      }
+      #x {
+        border: none;
+        margin: 10px;
+        margin-bottom: 20px;
+        border-radius: 100%;
+      }
+      #bx {
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="card">
+      <h3>Intelligent Code Editor</h3>
+      <h6 id="name">Sample text</h6>
+      <a href="../Logout">Logout</a>
+      <br />
+      <hr />
+      <h5>Create Test</h5>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="email"
+          class="form-control"
+          id="title"
+          placeholder="Enter Question title"
+        />
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          class="form-control"
+          id="description"
+          rows="3"
+          placeholder="Enter Description"
+        ></textarea>
+      </div>
+      <div id="testcases2">
+        Select Difficulty
+        <div class="form-group">
+          <select class="form-control" name="dificulty" id="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="testcases2">
+        Select Special test case
+        <div class="form-group">
+          <select class="form-control" name="specialTc" id="specialTc">
+            <option value="None">None</option>
+            <option value="Recursion">Recursion</option>
+            <option value="Loop">Loop</option>
+            <option value="Nested loop">Nested loop</option>
+          </select>
+        </div>
+      </div>
+      <div id="publicTc">
+        Add public testcase
+        <div id="testcases">
+          <span>#1</span>
+          <div class="form-group">
+            <textarea
+              class="form-control"
+              rows="3"
+              id="ip"
+              placeholder="Enter Input"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <textarea
+              class="form-control"
+              rows="3"
+              id="op"
+              placeholder="Enter Output"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div id="tc">
+        Add hidden testcases
+        <button onclick="addTestCase()" id="x" class="btn btn-primary">
+          +
+        </button>
+        <div id="testcases">
+          <span>#1</span>
+          <div class="form-group">
+            <textarea
+              class="form-control"
+              rows="3"
+              id="Input"
+              placeholder="Enter Input"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <textarea
+              class="form-control"
+              rows="3"
+              id="Output"
+              placeholder="Enter Output"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <button onclick="validate()" class="btn btn-primary">Create Test</button>
+      <div class="form-group"></div>
+      <div id="warning"></div>
+    </div>
+    <script src="../Javascript/script.js"></script>
+    <script>
+      window.onload = function() {
+        getSession();
+      };
+      function validate() {
+        var data = {
+          title: '',
+          description: '',
+          difficulty: '',
+          specialTc: '',
+          publicTc: {
+            ip: '',
+            op: ''
+          },
+          testcases: []
+        };
+        var title = document.getElementById('title');
+        var description = document.getElementById('description');
+        var difficulty = document.getElementById('difficulty');
+        var ip = document.getElementById('ip');
+        var op = document.getElementById('op');
+        var specialTc = document.getElementById('specialTc');
+        var ips = document.querySelectorAll('#Input');
+        var ops = document.querySelectorAll('#Output');
+        var count = 0;
+
+        if (title.value === '' || description.value === '') 
+        {
+          warn('Enter all required details.');
+          return;
+        }
+        data.title = title.value.trim();
+        data.description = description.value.trim();
+        data.difficulty = difficulty.value.trim();
+        data.publicTc.ip = ip.value.trim();
+        data.publicTc.op = op.value.trim();
+        data.speicalTc = specialTc.value.trim();
+        ips.forEach(ip => {
+          if (ip.value === '' || ops[count].value === '') return;
+          data.testcases.push({
+            input: ip.value.trim(),
+            output: ops[count].value.trim()
+          });
+          count++;
+        });
+        console.log(data);
+        createQuestion(data);
+      }
+
+      function createQuestion(details) {
+        fetch('http://localhost:8080/SmartEditor/Test', {
+          method: 'post',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(details)
+        })
+          .then(res => {
+            if (res.status !== 200) {
+              throw 'Server error';
+            }
+            res.json();
+          })
+          .then(data => {
+            window.alert('Question Created successfully');
+            window.location.reload();
+          })
+          .catch(error => {
+            warn(error);
+          });
+      }
+      function addTestCase() {
+        var span = document.createElement('span');
+        span.innerHTML = '#1';
+        var testcase = document.createElement('div');
+        testcase.appendChild(span);
+        testcase.setAttribute('id', 'testcases');
+        var static = ['Input', 'Output'];
+        static.forEach(type => {
+          testcase.appendChild(addBox(type));
+        });
+        document.getElementById('tc').appendChild(testcase);
+      }
+
+      function addBox(type) {
+        var Box = document.createElement('div');
+        Box.setAttribute('class', 'form-group');
+        var textarea = document.createElement('textarea');
+        textarea.setAttribute('class', 'form-control');
+        textarea.setAttribute('rows', '3');
+        textarea.setAttribute('id', type);
+        textarea.setAttribute('placeholder', `Enter ${type}`);
+        Box.appendChild(textarea);
+        return Box;
+      }
+    </script>
+  </body>
+</html>

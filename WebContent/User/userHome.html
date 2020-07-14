@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta http-equiv="Cache-control" content="no-store" />
+    <title>Intelligent Code Editor</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      #questions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      #qs {
+        width: 210px;
+        padding: 30px 5px;
+        margin: 30px;
+        background-color: #3072c2;
+        color: white;
+        border-radius: 10px;
+        align-content: center;
+      }
+      #qs:hover {
+        background-color: #275fa3;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="card">
+      <h3>Intelligent Code Editor</h3>
+      <h6 id="name">Sample text</h6>
+      <a href="../Logout">Logout</a>
+      <div id="questions"></div>
+      <div id="warning"></div>
+    </div>
+    <script src="../Javascript/script.js"></script>
+    <script>
+      window.onload = async function() {
+        await getSession();
+        fetch('http://localhost:8080/SmartEditor/Test')
+          .then(res => {
+            if (res.status !== 200) {
+              throw 'Unable to fetch questions';
+            }
+            return res.json();
+          })
+          .then(data => {
+            if (data.length === 0) {
+              throw 'No questions found';
+            }
+            data.forEach(question => {
+              var ques = document.createElement('div');
+              ques.setAttribute('id', 'qs');
+              ques.setAttribute('onclick', `redirect(${question.testId})`);
+              var title = document.createElement('h5');
+              var difficulty = document.createElement('span');
+              title.innerHTML = question.testTitle;
+              difficulty.innerHTML = question.testDiff;
+              ques.appendChild(title);
+              ques.appendChild(difficulty);
+              document.getElementById('questions').appendChild(ques);
+            });
+          })
+          .catch(error => {
+            warn(error);
+          });
+      };
+      function redirect(testId) {
+        localStorage.setItem('testId', testId);
+        window.location.href = 'userTest.html';
+        console.log('Hello World', testId);
+      }
+    </script>
+  </body>
+</html>

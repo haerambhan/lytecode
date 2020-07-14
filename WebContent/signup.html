@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Intelligent Code Editor</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="card">
+      <h3>Intelligent Code Editor</h3>
+      <button
+        type="button"
+        class="btn btn-primary"
+        id="mynav"
+        onclick="loginPage()"
+      >
+        Existing user
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        id="mynav"
+        onclick="signupPage()"
+      >
+        New user
+      </button>
+      <div class="form-group">
+        <label for="userId">userId</label>
+        <input
+          type="text"
+          class="form-control"
+          id="userId"
+          placeholder="Enter userId"
+        />
+      </div>
+      <div class="form-group">
+        <label for="userId">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          placeholder="Enter Name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="pass1"
+          placeholder="Enter Password"
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Confirm Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="pass2"
+          placeholder="Enter Password again"
+        />
+      </div>
+      <button onclick="validate()" class="btn btn-primary">Signup</button>
+      <div id="warning"></div>
+    </div>
+    <script src="Javascript/script.js"></script>
+    <script>
+      function validate() {
+        var data = {
+          userId: '',
+          userName: '',
+          password: ''
+        };
+        var userId = document.getElementById('userId');
+        var userName = document.getElementById('name');
+        var pass1 = document.getElementById('pass1');
+        var pass2 = document.getElementById('pass2');
+
+        if (userId.value === '') {
+          warn('userId required');
+          return;
+        }
+        if (name.value === '') {
+          warn('Name required');
+          return;
+        }
+        if (pass1.value === '' || pass2.value === '') {
+          warn('Password required');
+          return;
+        }
+        if (pass1.value !== pass2.value) {
+          warn('Passwords do not match');
+          return;
+        }
+        data.userId = userId.value.trim();
+        data.userName = userName.value.trim();
+        data.password = pass2.value;
+        signup(data);
+      }
+      function loginPage() {
+        window.location.href = 'index.html';
+      }
+      function signupPage() {
+        window.location.href = 'signup.html';
+      }
+      function signup(details) {
+        fetch('http://localhost:8080/SmartEditor/Signup', {
+          method: 'post',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(details)
+        })
+          .then(res => {
+            if (res.status !== 200) {
+              throw 'Server error';
+            }
+            return res.json();
+          })
+          .then(data => {
+            console.log(data);
+            if (data === 'true') {
+              window.location.href = 'User/userHome.html';
+              return;
+            }
+            if (data === 'exists');
+            {
+              throw 'User already exists';
+            }
+          })
+          .catch(error => {
+            warn(error);
+          });
+      }
+    </script>
+  </body>
+</html>

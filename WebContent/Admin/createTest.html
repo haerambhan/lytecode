@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <div id="testcases2">
+      <div id="testcases2" style="display: none">
         Select Special test case
         <div class="form-group">
           <select class="form-control" name="specialTc" id="specialTc">
@@ -132,7 +132,7 @@
     </div>
     <script src="../Javascript/script.js"></script>
     <script>
-      window.onload = function() {
+      window.onload = function () {
         getSession();
       };
       function validate() {
@@ -143,9 +143,9 @@
           specialTc: '',
           publicTc: {
             ip: '',
-            op: ''
+            op: '',
           },
-          testcases: []
+          testcases: [],
         };
         var title = document.getElementById('title');
         var description = document.getElementById('description');
@@ -157,22 +157,21 @@
         var ops = document.querySelectorAll('#Output');
         var count = 0;
 
-        if (title.value === '' || description.value === '') 
-        {
+        if (title.value === '' || description.value === '') {
           warn('Enter all required details.');
           return;
         }
         data.title = title.value.trim();
         data.description = description.value.trim();
         data.difficulty = difficulty.value.trim();
-        data.publicTc.ip = ip.value.trim();
-        data.publicTc.op = op.value.trim();
+        data.publicTc.ip = JSON.stringify(ip.value);
+        data.publicTc.op = JSON.stringify(op.value);
         data.speicalTc = specialTc.value.trim();
-        ips.forEach(ip => {
+        ips.forEach((ip) => {
           if (ip.value === '' || ops[count].value === '') return;
           data.testcases.push({
-            input: ip.value.trim(),
-            output: ops[count].value.trim()
+            input: JSON.stringify(ip.value),
+            output: JSON.stringify(ops[count].value),
           });
           count++;
         });
@@ -184,19 +183,19 @@
         fetch('http://localhost:8080/SmartEditor/Test', {
           method: 'post',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(details)
+          body: JSON.stringify(details),
         })
-          .then(res => {
+          .then((res) => {
             if (res.status !== 200) {
               throw 'Server error';
             }
             res.json();
           })
-          .then(data => {
+          .then((data) => {
             window.alert('Question Created successfully');
             window.location.reload();
           })
-          .catch(error => {
+          .catch((error) => {
             warn(error);
           });
       }
@@ -207,7 +206,7 @@
         testcase.appendChild(span);
         testcase.setAttribute('id', 'testcases');
         var static = ['Input', 'Output'];
-        static.forEach(type => {
+        static.forEach((type) => {
           testcase.appendChild(addBox(type));
         });
         document.getElementById('tc').appendChild(testcase);
@@ -217,7 +216,7 @@
         var Box = document.createElement('div');
         Box.setAttribute('class', 'form-group');
         var textarea = document.createElement('textarea');
-        textarea.setAttribute('class', 'form-control');
+        textarea.setAttribute('class', 'form-control ');
         textarea.setAttribute('rows', '3');
         textarea.setAttribute('id', type);
         textarea.setAttribute('placeholder', `Enter ${type}`);

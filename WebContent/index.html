@@ -60,7 +60,7 @@
       function validate() {
         var data = {
           userId: '',
-          password: ''
+          password: '',
         };
         var userId = document.getElementById('userId');
         var password = document.getElementById('password');
@@ -89,16 +89,16 @@
           method: 'post',
           //   mode: 'no-cors',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(details)
+          body: JSON.stringify(details),
         })
-          .then(res => {
+          .then((res) => {
             console.log('Response: ' + res.status);
             if (res.status != 200) {
               throw 'Server error';
             }
             return res.json();
           })
-          .then(data => {
+          .then((data) => {
             console.log(data);
             if (data === 'true' && details.userId === 'andrew') {
               window.location.href = 'Admin/createTest.html';
@@ -110,7 +110,7 @@
               throw 'Invalid Credentials';
             }
           })
-          .catch(error => {
+          .catch((error) => {
             warn(error);
           });
       }

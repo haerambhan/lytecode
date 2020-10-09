@@ -50,6 +50,12 @@
       #right {
         width: 60%;
       }
+      #description {
+        text-align: left;
+      }
+      .hidden2 {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -67,6 +73,13 @@
             sed!
           </div>
           <hr />
+          <div id="analysis" class="hidden2">
+            <h5>Analysis</h5>
+            <div id="analysisContent">
+              Number of loops: <span id="loopCount"></span><br />
+              Highest level of nesting: <span id="maxLevel"></span>
+            </div>
+          </div>
         </div>
         <div id="right">
           <div id="language">
@@ -100,7 +113,7 @@
             Run
           </button>
           <button onclick="submit()" class="btn btn-primary" id="mynav">
-            Submit
+            Analyse
           </button>
           <div class="loader"></div>
           <div id="warning"></div>
@@ -114,30 +127,30 @@
       charset="utf-8"
     ></script>
     <script>
-      document.getElementById('editor').style.fontSize = '18px';
+      document.getElementById('editor').style.fontSize = '12px';
       var editor = ace.edit('editor', {
         theme: 'ace/theme/tomorrow_night_blue',
         mode: 'ace/mode/java',
         maxLines: 30,
         minLines: 15,
         wrap: true,
-        autoScrollEditorIntoView: true
+        autoScrollEditorIntoView: true,
       });
 
       var publicTc = {};
       var testcases = [];
 
-      window.onload = function() {
+      window.onload = function () {
         getSession();
         var testId = localStorage.getItem('testId');
         fetch('http://localhost:8080/SmartEditor/Test/' + testId)
-          .then(res => {
+          .then((res) => {
             if (res.status !== 200) {
               throw 'Unable to fetch question';
             }
             return res.json();
           })
-          .then(data => {
+          .then((data) => {
             // console.log(data);
             publicTc = data.publicTc;
             testcases = data.testcases;
@@ -145,14 +158,16 @@
             document.getElementById('description').innerHTML = data.testDesc;
             document
               .querySelectorAll('#ip')
-              .forEach(ele => (ele.innerHTML = data.publicTc.input));
+              .forEach((ele) => (ele.innerHTML = data.publicTc.input));
             document
               .querySelectorAll('#op')
-              .forEach(ele => (ele.innerHTML = data.publicTc.output));
+              .forEach((ele) => (ele.innerHTML = data.publicTc.output));
+            // document.getElementById('ip').innerHTML = textContent.replace(/\n/g, '<br/>');
+            // document.getElementById('op').innerHTML = textContent.replace(/\n/g, '<br/>');
             // document.querySelectorAll('#ip').innerHTML = data.publicTc.input;
             // document.querySelectorAll('#op').innerHTML = data.publicTc.output;
           })
-          .catch(error => {
+          .catch((error) => {
             warn(error);
           });
       };
@@ -164,7 +179,7 @@
         document.querySelector('.loader').style.display = 'block';
         document
           .querySelectorAll('.hidden')
-          .forEach(ele => (ele.style.display = 'none'));
+          .forEach((ele) => (ele.style.display = 'none'));
         document.getElementById('sop').style.display = 'block';
         document.getElementById('sop').style.color = 'red';
         document.getElementById('sop').innerHTML =
@@ -202,7 +217,7 @@
           document.querySelector('.loader').style.display = 'none';
           document
             .querySelectorAll('.hidden')
-            .forEach(ele => (ele.style.display = 'block'));
+            .forEach((ele) => (ele.style.display = 'block'));
           document.getElementById('sop').innerHTML = result;
         }
       }
@@ -215,7 +230,7 @@
           stdin: input,
           script: '',
           language: '',
-          versionIndex: '3'
+          versionIndex: '3',
         };
 
         req.script = editor.getValue();
@@ -231,10 +246,10 @@
         return fetch('https://ancient-eyrie-49794.herokuapp.com/', {
           method: 'post',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(req)
+          body: JSON.stringify(req),
         })
-          .then(res => res.json())
-          .then(data => {
+          .then((res) => res.json())
+          .then((data) => {
             document.getElementById('mynav').disabled = false;
             // console.log(data.output);
             return data.output;
@@ -245,7 +260,23 @@
         // console.log(JSON.stringify(editor.getValue()));
       }
       function submit() {
-        console.log('Haha');
+        document.getElementById('analysis').style.display = 'block';
+        var code = editor.getValue();
+        var language = document.getElementById('lang');
+        var param = '?language=' + language.value;
+        console.log(param);
+        fetch('http://localhost:8080/SmartEditor/Analysis' + param, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: code,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            var loopCount = document.getElementById('loopCount');
+            var maxLevel = document.getElementById('maxLevel');
+            loopCount.innerHTML = data.loopCount;
+            maxLevel.innerHTML = data.maxLevel;
+          });
       }
     </script>
   </body>

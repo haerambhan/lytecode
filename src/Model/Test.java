@@ -49,14 +49,13 @@ public class Test {
 	private String testDiff;
 	private Set<TestCase> testcases;
 	private TestCase publicTc;
-	private String specialTc;
 	
 	public TestCase getPublicTc() {
 		return publicTc;
 	}
 
 	public Test(int testId, String testTitle, String testDesc, String testDiff, Set<TestCase> testcases,
-			TestCase publicTc, String specialTc) {
+			TestCase publicTc) {
 		super();
 		this.testId = testId;
 		this.testTitle = testTitle;
@@ -64,18 +63,9 @@ public class Test {
 		this.testDiff = testDiff;
 		this.testcases = testcases;
 		this.publicTc = publicTc;
-		this.specialTc = specialTc;
 	}
 
 	public void setPublicTc(TestCase publicTc) {
 		this.publicTc = publicTc;
-	}
-
-	public String getSpecialTc() {
-		return specialTc;
-	}
-
-	public void setSpecialTc(String specialTc) {
-		this.specialTc = specialTc;
 	}
 }

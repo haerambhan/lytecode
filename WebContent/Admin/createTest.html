@@ -152,7 +152,6 @@
         var difficulty = document.getElementById('difficulty');
         var ip = document.getElementById('ip');
         var op = document.getElementById('op');
-        var specialTc = document.getElementById('specialTc');
         var ips = document.querySelectorAll('#Input');
         var ops = document.querySelectorAll('#Output');
         var count = 0;
@@ -164,9 +163,8 @@
         data.title = title.value.trim();
         data.description = description.value.trim();
         data.difficulty = difficulty.value.trim();
-        data.publicTc.ip = JSON.stringify(ip.value);
-        data.publicTc.op = JSON.stringify(op.value);
-        data.speicalTc = specialTc.value.trim();
+        data.publicTc.ip = ip.value;
+        data.publicTc.op = op.value;
         ips.forEach((ip) => {
           if (ip.value === '' || ops[count].value === '') return;
           data.testcases.push({

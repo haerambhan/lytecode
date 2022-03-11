@@ -59,15 +59,11 @@ public class TestServlet extends HttpServlet{
 	    String body = request.getReader().readLine();
 	    try 
 	    {
-//	    	System.out.println("Hello");
 			JSONObject obj = new JSONObject(body);
 			String title = obj.getString("title");
 			String description = obj.getString("description");
 			String difficulty = obj.getString("difficulty");
-			String specialTc = obj.getString("specialTc");
-//			System.out.println(obj);
-//			System.out.println(specialTc);
-			int testId = db.createTest(title, description, difficulty, specialTc);
+			int testId = db.createTest(title, description, difficulty);
 			JSONObject publicTc = obj.getJSONObject("publicTc");
 			String ip = publicTc.getString("ip");
 			String op = publicTc.getString("op");

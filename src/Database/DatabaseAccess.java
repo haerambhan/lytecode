@@ -90,7 +90,7 @@ public class DatabaseAccess
 		return null;
 	}
 
-	public int createTest(String title, String description, String difficulty, String specialTc) throws SQLException {
+	public int createTest(String title, String description, String difficulty) throws SQLException {
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
@@ -98,11 +98,10 @@ public class DatabaseAccess
 
 		try {
 			con = getConnection();
-			pt = con.prepareStatement("Insert into Test (testTitle, testDesc, testDiff, specialTc) values (?,?,?,?)");
+			pt = con.prepareStatement("Insert into Test (testTitle, testDesc, testDiff) values (?,?,?)");
 			pt.setString(1, title);
 			pt.setString(2, description);
 			pt.setString(3, difficulty);
-			pt.setString(4, specialTc);
 			pt.executeUpdate();
 			pt.close();
 			pt = con.prepareStatement("select last_insert_id();");
@@ -162,7 +161,7 @@ public class DatabaseAccess
 			String p[] = new String[6];
 			while (rs.next()) 
 			{
-				for (int i = 1; i <= 5; i++) 
+				for (int i = 1; i <= 4; i++) 
 				{
 					p[i] = rs.getString(i);
 				}
@@ -170,10 +169,10 @@ public class DatabaseAccess
 				String testTitle = p[2];
 				String testDesc = p[3];
 				String testDiff = p[4];
-				String specialTc = p[5];
+
 				TestCase publicTc = getPublicTestCase(testId);
 				Set<TestCase> testcases = getTestCases(testId);
-				tests.add(new Test(testId, testTitle, testDesc, testDiff, testcases, publicTc, specialTc));
+				tests.add(new Test(testId, testTitle, testDesc, testDiff, testcases, publicTc));
 			}
 		} catch (Exception e) {
 			System.out.println(e);
@@ -275,7 +274,7 @@ public class DatabaseAccess
 			rs = pt.executeQuery();
 			rs.next();
 			String p[] = new String[6];
-			for (int i = 1; i <= 5; i++) 
+			for (int i = 1; i <= 4; i++) 
 			{
 				p[i] = rs.getString(i);
 			}
@@ -283,10 +282,9 @@ public class DatabaseAccess
 			String testTitle = p[2];
 			String testDesc = p[3];
 			String testDiff = p[4];
-			String specialTc = p[5];
 			Set<TestCase> testcases = getTestCases(testId);
 			TestCase publicTc = getPublicTestCase(testId);
-			test = new Test(testId, testTitle, testDesc, testDiff, testcases, publicTc, specialTc);
+			test = new Test(testId, testTitle, testDesc, testDiff, testcases, publicTc);
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {

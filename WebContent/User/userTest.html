@@ -73,13 +73,6 @@
             sed!
           </div>
           <hr />
-          <div id="analysis" class="hidden2">
-            <h5>Analysis</h5>
-            <div id="analysisContent">
-              Number of loops: <span id="loopCount"></span><br />
-              Highest level of nesting: <span id="maxLevel"></span>
-            </div>
-          </div>
         </div>
         <div id="right">
           <div id="language">
@@ -113,7 +106,7 @@
             Run
           </button>
           <button onclick="submit()" class="btn btn-primary" id="mynav">
-            Analyse
+            Submit
           </button>
           <div class="loader"></div>
           <div id="warning"></div>
@@ -260,23 +253,7 @@
         // console.log(JSON.stringify(editor.getValue()));
       }
       function submit() {
-        document.getElementById('analysis').style.display = 'block';
-        var code = editor.getValue();
-        var language = document.getElementById('lang');
-        var param = '?language=' + language.value;
-        console.log(param);
-        fetch('http://localhost:8080/SmartEditor/Analysis' + param, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: code,
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            var loopCount = document.getElementById('loopCount');
-            var maxLevel = document.getElementById('maxLevel');
-            loopCount.innerHTML = data.loopCount;
-            maxLevel.innerHTML = data.maxLevel;
-          });
+    	  // Yet to implement
       }
     </script>
   </body>

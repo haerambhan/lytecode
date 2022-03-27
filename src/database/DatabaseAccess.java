@@ -1,7 +1,8 @@
-package Database;
+package database;
 import java.sql.*;
-import Model.*;
 import java.util.*;
+
+import model.*;
 
 public class DatabaseAccess 
 {

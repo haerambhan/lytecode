@@ -1,119 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta
-      charset="UTF-8"
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>Intelligent Code Editor</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="card">
-      <h3>Intelligent Code Editor</h3>
-      <button
-        type="button"
-        class="btn btn-primary"
-        id="mynav"
-        onclick="loginPage()"
-      >
-        Existing user
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        id="mynav"
-        onclick="signupPage()"
-      >
-        New user
-      </button>
-      <div class="form-group">
-        <label for="userId">UserId</label>
-        <input
-          type="text"
-          class="form-control"
-          id="userId"
-          placeholder="Enter UserId"
-        />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          placeholder="Enter Password"
-        />
-      </div>
-      <button onclick="validate()" class="btn btn-primary">Login</button>
-      <div id="warning"></div>
-    </div>
-    <script src="Javascript/script.js"></script>
-    <script>
-      function validate() {
-        var data = {
-          userId: '',
-          password: '',
-        };
-        var userId = document.getElementById('userId');
-        var password = document.getElementById('password');
-        console.log(userId.value, password.value);
-        if (userId.value === '') {
-          warn('User ID required');
-          return;
-        }
-        if (password.value === '') {
-          warn('Password required');
-          return;
-        }
-        data.userId = userId.value.trim();
-        data.password = password.value;
-        login(data);
-      }
-      function loginPage() {
-        var sample = [{}, {}, {}];
-        window.location.href = 'index.html';
-      }
-      function signupPage() {
-        window.location.href = 'signup.html';
-      }
-      function login(details) {
-        fetch('http://localhost:8080/SmartEditor/Login', {
-          method: 'post',
-          //   mode: 'no-cors',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(details),
-        })
-          .then((res) => {
-            console.log('Response: ' + res.status);
-            if (res.status != 200) {
-              throw 'Server error';
-            }
-            return res.json();
-          })
-          .then((data) => {
-            console.log(data);
-            if (data === 'true' && details.userId === 'admin') {
-              window.location.href = 'Admin/createTest.html';
-              return;
-            } else if (data === 'true') {
-              window.location.href = 'User/userHome.html';
-              return;
-            } else {
-              throw 'Invalid Credentials';
-            }
-          })
-          .catch((error) => {
-            warn(error);
-          });
-      }
-    </script>
-  </body>
+	<head>
+		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Intelligent Code Editor</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="styles/common.css" />
+	</head>
+	<body>
+		<div id="card">
+			<h3>Intelligent Code Editor</h3>
+			<a type="button" class="btn btn-primary" id="mynav" href = "index.html">Existing user</a>
+			<a type="button" class="btn btn-primary" id="mynav" href = "signup.html">New user</a>
+			<div class="form-group">
+				<label for="userId">User ID</label> 
+				<input type="text" class="form-control" id="userId" placeholder="Enter UserId" />
+			</div>
+			<div class="form-group">
+				<label for="password">Password</label> 
+				<input type="password" class="form-control" id="password" placeholder="Enter Password" />
+			</div>
+			<button onclick="login()" class="btn btn-primary">Login</button>
+			<div id="warning"></div>
+			<div id="notification"></div>
+		</div>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/login.js"></script>
+	</body>
 </html>

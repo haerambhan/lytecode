@@ -1,0 +1,13 @@
+#testcases {
+	display: flex;
+	justify-content: space-evenly;
+}
+#x {
+	border: none;
+	margin: 10px;
+	margin-bottom: 20px;
+	border-radius: 100%;
+}
+#bx {
+	margin: 10px;
+}

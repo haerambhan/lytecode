@@ -1,0 +1,50 @@
+#tc {
+	text-align: center;
+}
+
+#lang {
+	width: 50%;
+}
+
+.output {
+	color: red;
+	padding: 20px;
+	text-align: left;
+	background-color: rgb(234, 240, 247);
+}
+
+#theme, #language {
+	align-items: baseline;
+	justify-content: space-between;
+	display: flex;
+}
+
+.hidden {
+	text-align: left;
+	display: none;
+}
+
+#card {
+	width: 90%;
+}
+
+.content {
+	display: flex;
+	justify-content: space-around;
+}
+
+#left {
+	width: 30%;
+}
+
+#right {
+	width: 60%;
+}
+
+#description {
+	text-align: left;
+}
+
+.hidden2 {
+	display: none;
+}

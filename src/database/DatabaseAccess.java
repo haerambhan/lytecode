@@ -20,6 +20,20 @@ public class DatabaseAccess
 		return c;
 	}
 	
+	private static DatabaseAccess instance;
+	
+	public static DatabaseAccess getInstance() {
+	
+		if(instance != null) {
+			return instance;
+		}
+		return new DatabaseAccess();
+	}
+	
+	private DatabaseAccess() {
+		// Private constructor for singleton
+	}
+	
 	public User CreateUser(String userId, String userName, String userPassword) throws SQLException
 	{
 		Connection con = null;

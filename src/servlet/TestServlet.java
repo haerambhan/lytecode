@@ -25,7 +25,7 @@ public class TestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String path = req.getPathInfo();
-		DatabaseAccess db = new DatabaseAccess();
+		DatabaseAccess db = DatabaseAccess.getInstance();
 		if (path == null || path.equals("/")) {
 			Set<Test> tests = db.getTests();
 			CommonUtil.handleResponse(resp, Response.SUCCESS, new JSONArray(tests));
@@ -38,7 +38,7 @@ public class TestServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		DatabaseAccess db = new DatabaseAccess();
+		DatabaseAccess db = DatabaseAccess.getInstance();
 		String body = request.getReader().readLine();
 		try {
 			JSONObject obj = new JSONObject(body);

@@ -21,7 +21,7 @@ public class SignupServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DatabaseAccess db = new DatabaseAccess();
+		DatabaseAccess db = DatabaseAccess.getInstance();
 		String body = request.getReader().readLine();
 		JSONObject obj = new JSONObject(body);
 		try {

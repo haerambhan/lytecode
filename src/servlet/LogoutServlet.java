@@ -1,8 +1,5 @@
 package servlet;
 
-import java.io.IOException;
-
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +14,15 @@ public class LogoutServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		HttpSession session = request.getSession();
-		session.invalidate();
-		CommonUtil.handleResponse(response, Response.SUCCESS, null);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			HttpSession session = request.getSession();
+			session.invalidate();
+			CommonUtil.handleResponse(response, Response.SUCCESS, null, null);			
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, ex.getMessage(), null);
+		}
 	}
 }

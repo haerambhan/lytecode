@@ -1,12 +1,10 @@
 package servlet;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import org.json.JSONObject;
 
-import database.DatabaseAccess;
-import jakarta.servlet.ServletException;
+import database.DBUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,26 +18,27 @@ public class SignupServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DatabaseAccess db = DatabaseAccess.getInstance();
-		String body = request.getReader().readLine();
-		JSONObject obj = new JSONObject(body);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response){
+
 		try {
+			String body = request.getReader().readLine();
+			JSONObject obj = new JSONObject(body);
 			String userId = obj.getString("userId");
 			String userName = obj.getString("userName");
 			String password = obj.getString("password");
-			User user = db.CreateUser(userId, userName, password);
+			User user = DBUtil.getInstance().CreateUser(userId, userName, password);
 
 			if (user != null) {
-				CommonUtil.handleResponse(response, Response.SUCCESS, CommonUtil.createSession(request, user));
+				CommonUtil.handleResponse(response, Response.SUCCESS, null, CommonUtil.createSession(request, user));
 			} else {
-				CommonUtil.handleResponse(response, Response.SIGNUP_FAILED, null);
+				CommonUtil.handleResponse(response, Response.SIGNUP_FAILED, null, null);
 			}
 
 		} catch (SQLException e) {
-			CommonUtil.handleResponse(response, Response.USER_EXISTS, null);
+			CommonUtil.handleResponse(response, Response.USER_EXISTS, null, null);
 		} catch (Exception e) {
-			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, null);
+			e.printStackTrace();
+			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, e.getMessage(), null);
 		}
 	}
 }

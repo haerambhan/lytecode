@@ -1,40 +1,37 @@
 package database;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import model.*;
+import model.Test;
+import model.TestCase;
+import model.User;
 
-public class DatabaseAccess 
+public class DBUtil 
 {
-	public static Connection getConnection() throws SQLException {
+	public static Connection getConnection() throws Exception {
 		Connection c = null;
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			c = DriverManager.getConnection("jdbc:mysql://localhost:3306/editor?useSSL=false", "root",
-					"root");
-		} catch (ClassNotFoundException e) {
-			System.out.println(e);
-		} catch (SQLException e) {
-			throw e;
-		}
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		c = DriverManager.getConnection("jdbc:mysql://localhost:3306/editor?useSSL=false", "root","root");
 		return c;
 	}
 	
-	private static DatabaseAccess instance;
-	
-	public static DatabaseAccess getInstance() {
+	private static DBUtil instance;
+	public static DBUtil getInstance() {
 	
 		if(instance != null) {
 			return instance;
 		}
-		return new DatabaseAccess();
+		return new DBUtil();
 	}
-	
-	private DatabaseAccess() {
+	private DBUtil() {
 		// Private constructor for singleton
 	}
 	
-	public User CreateUser(String userId, String userName, String userPassword) throws SQLException
+	public User CreateUser(String userId, String userName, String userPassword) throws Exception
 	{
 		Connection con = null;
 		PreparedStatement pt = null;
@@ -48,21 +45,14 @@ public class DatabaseAccess
 			pt.setInt(4, 2);
 			pt.executeUpdate();
 			user = new User(userId, userName, userPassword, 2);
-			return user;
-		} catch (SQLException e) {
-			System.out.println(e);
-			throw e;
-		} finally {
-			try {
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+		}finally {
+			pt.close();
+			con.close();
 		}
+		return user;
 	}
 	
-	public User getUser(String id, String pass) throws SQLException
+	public User getUser(String id, String pass) throws Exception
 	{
 		Connection con = null;
 		PreparedStatement pt = null;
@@ -71,8 +61,7 @@ public class DatabaseAccess
 
 		try {
 			con = getConnection();
-			pt = con.prepareStatement(
-					"Select userId, userName, userPassword, userType from User where userId = ? AND userPassword = ?");
+			pt = con.prepareStatement("Select userId, userName, userPassword, userType from User where userId = ? AND userPassword = ?");
 			pt.setString(1, id);
 			pt.setString(2, pass);
 			rs = pt.executeQuery();
@@ -86,30 +75,21 @@ public class DatabaseAccess
 				String userPassword = p[3];
 				int userType= Integer.parseInt(p[4]);
 				user = new User(userId, userName, userPassword, userType);
-				return user;
 			}
-		}
-		catch (SQLException e)
-		{
-			System.out.println("SQL Exception has occured");
-			throw e;
 		}
 		finally {
-			try {
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+			pt.close();
+			con.close();
 		}
-		return null;
+		return user;
 	}
 
-	public int createTest(String title, String description, String difficulty) throws SQLException {
+	public Integer createTest(String title, String description, String difficulty) throws Exception {
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
 		System.out.println("CREATE TEST");
+		Integer testId = null;
 
 		try {
 			con = getConnection();
@@ -122,22 +102,15 @@ public class DatabaseAccess
 			pt = con.prepareStatement("select last_insert_id();");
 			rs = pt.executeQuery();
 			rs.next();
-			int id = rs.getInt(1);
-			return id;
-		} catch (SQLException e) {
-			System.out.println(e);
-			throw e;
+			testId = rs.getInt(1);
 		} finally {
-			try {
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+			pt.close();
+			con.close();		
 		}
+		return testId;
 	}
 
-	public void addTestCase(String input, String output, int testId, int testCaseType) throws SQLException {
+	public void addTestCase(String input, String output, int testId, int testCaseType) throws Exception {
 		
 		Connection con = null;
 		PreparedStatement pt = null;
@@ -149,20 +122,13 @@ public class DatabaseAccess
 			pt.setInt(3, testId);
 			pt.setInt(4, testCaseType);
 			pt.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println(e);
-			throw e;
-		} finally {
-			try {
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+		}finally {
+			pt.close();
+			con.close();
 		}	
 	}
 
-	public Set<Test> getTests() {
+	public Set<Test> getTests() throws Exception {
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
@@ -186,24 +152,19 @@ public class DatabaseAccess
 				String testDiff = p[4];
 
 				TestCase publicTc = getPublicTestCase(testId);
-				Set<TestCase> testcases = getTestCases(testId);
-				tests.add(new Test(testId, testTitle, testDesc, testDiff, testcases, publicTc));
+				Test test = new Test(testId, testTitle, testDesc, testDiff, publicTc);
+				tests.add(test);
+				
 			}
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			try {
-				rs.close();
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+		}finally {
+			rs.close();
+			pt.close();
+			con.close();
 		}
 		return tests;
 	}
 
-	private TestCase getPublicTestCase(int testId) {
+	private TestCase getPublicTestCase(int testId) throws Exception{
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
@@ -216,29 +177,23 @@ public class DatabaseAccess
 			rs = pt.executeQuery();
 			String p[] = new String[5];
 			rs.next();
-				for (int i = 1; i <= 3; i++) 
-				{
-					p[i] = rs.getString(i);
-				}
-				int testCaseId = Integer.parseInt(p[1]);
-				String input = p[2];
-				String output = p[3];
-				testcase = new TestCase(testCaseId, input, output);
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			try {
-				rs.close();
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
+			for (int i = 1; i <= 3; i++) 
+			{
+				p[i] = rs.getString(i);
 			}
+			int testCaseId = Integer.parseInt(p[1]);
+			String input = p[2];
+			String output = p[3];
+			testcase = new TestCase(testCaseId, input, output);
+		}finally {
+			rs.close();
+			pt.close();
+			con.close();
 		}
 		return testcase;
 	}
 
-	private Set<TestCase> getTestCases(int testId) {
+	private Set<TestCase> getTestCases(int testId) throws Exception {
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
@@ -262,21 +217,15 @@ public class DatabaseAccess
 				String output = p[3];
 				testcases.add(new TestCase(testCaseId, input, output));
 			}
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			try {
-				rs.close();
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
-			}
+		}finally {
+			rs.close();
+			pt.close();
+			con.close();
 		}
 		return testcases;
 	}
 
-	public Test getTest(int tId) {
+	public Test getTest(int tId, boolean getHiddenTestCases) throws Exception{
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
@@ -297,19 +246,16 @@ public class DatabaseAccess
 			String testTitle = p[2];
 			String testDesc = p[3];
 			String testDiff = p[4];
-			Set<TestCase> testcases = getTestCases(testId);
 			TestCase publicTc = getPublicTestCase(testId);
-			test = new Test(testId, testTitle, testDesc, testDiff, testcases, publicTc);
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			try {
-				rs.close();
-				pt.close();
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
+			test = new Test(testId, testTitle, testDesc, testDiff, publicTc);
+			if(getHiddenTestCases) {
+				Set<TestCase> testcases = getTestCases(testId);
+				test.setTestcases(testcases);
 			}
+		} finally {
+			rs.close();
+			pt.close();
+			con.close();
 		}
 		return test;
 	}

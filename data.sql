@@ -27,10 +27,10 @@ DROP TABLE IF EXISTS `test`;
 CREATE TABLE `test` (
   `testId` int NOT NULL AUTO_INCREMENT,
   `testTitle` varchar(20) DEFAULT NULL,
-  `testDesc` varchar(200) DEFAULT NULL,
+  `testDesc` varchar(5000) DEFAULT NULL,
   `testDiff` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`testId`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `test` (
 
 LOCK TABLES `test` WRITE;
 /*!40000 ALTER TABLE `test` DISABLE KEYS */;
-INSERT INTO `test` VALUES (101,'Prime number','Write a program to find whether the given number is prime or not.\nSample input: 4\nSample output: false\n\nSample input: 5\nSample output: true','Easy'),(102,'Factorial','Write a program to find the factorial of a given number\nSample input: 4\nSample output: 24\nExplanation: 4x3x2x1 = 24\n\nSample input: 5\nSample output: 120\nExplanation: 5x4x3x2x1 = 120','Medium');
+INSERT INTO `test` VALUES (103,'Prime number','Write a program to find whether the given number is prime or not.\nA prime number is a number that is not divisible by any other number. A prime number has only 2 factors: 1 and itself.\n\nExample 1:\ninput: 17\noutput: true\nExplanation: 17 is not divisible by any other number\n\nExample 2:\ninput: 35\noutput: false\nExplanation: 35 is divisible by 7 and 5','Easy'),(104,'Factorial','Write a program to calculate the factorial of the given number. The factorial of N is the product of all the numbers less than or equal to N\r \r Example 1:\r input: 5\r output: 120\r Explanation: 5x4x3x2x1 = 120\r \r Example 2:\r input: 4\r output: 24\r Explanation: 4x3x2x1 = 24','Easy');
 /*!40000 ALTER TABLE `test` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `testcase` (
   PRIMARY KEY (`testCaseId`),
   KEY `testId` (`testId`),
   CONSTRAINT `testcase_ibfk_1` FOREIGN KEY (`testId`) REFERENCES `test` (`testId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=210 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `testcase` (
 
 LOCK TABLES `testcase` WRITE;
 /*!40000 ALTER TABLE `testcase` DISABLE KEYS */;
-INSERT INTO `testcase` VALUES (200,'4','false',101,1),(201,'19937','true',101,2),(202,'2','true',101,2),(203,'8','false',101,2),(204,'9','false',101,2),(205,'17','true',101,2),(206,'5','120',102,1),(207,'6','720',102,2),(208,'0','1',102,2),(209,'3','6',102,2);
+INSERT INTO `testcase` VALUES (210,'4','false',103,1),(211,'\"7919\"','\"true\"',103,2),(212,'\"7920\"','\"false\"',103,2),(213,'\"43201\"','\"true\"',103,2),(214,'\"43200\"','\"false\"',103,2),(215,'\"3\"','\"true\"',103,2),(216,'3','6',104,1),(217,'\"7\"','\"5040\"',104,2),(218,'\"0\"','\"1\"',104,2),(219,'\"9\"','\"362880\"',104,2);
 /*!40000 ALTER TABLE `testcase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-10 10:26:46
+-- Dump completed on 2022-03-28 20:03:34

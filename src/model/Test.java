@@ -54,14 +54,12 @@ public class Test {
 		return publicTc;
 	}
 
-	public Test(int testId, String testTitle, String testDesc, String testDiff, Set<TestCase> testcases,
-			TestCase publicTc) {
+	public Test(int testId, String testTitle, String testDesc, String testDiff, TestCase publicTc) {
 		super();
 		this.testId = testId;
 		this.testTitle = testTitle;
 		this.testDesc = testDesc;
 		this.testDiff = testDiff;
-		this.testcases = testcases;
 		this.publicTc = publicTc;
 	}
 

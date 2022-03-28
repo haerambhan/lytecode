@@ -11,12 +11,12 @@
 		<div id="card">
 			<div class="content">
 				<div id="left">
-					<h3>Intelligent Code Editor</h3>
+					<h3 >Intelligent Code Editor</h3>
 					<h6 id="name">Sample text</h6>
 					<button onclick="logout()" class="btn btn-danger">Logout</button>
 					<br />
 					<hr />
-					<h5 id="title">Prime number</h5>
+					<h5 id="title" class="font-weight-bold">Prime number</h5>
 					<div id="description"> Sample description</div>
 					<hr />
 				</div>
@@ -27,11 +27,11 @@
 							Output: <b><span id="op"></span></b>
 						</div>
 						<br/> 
-						<select onchange="changeLang(this)"
-							class="browser-default custom-select" id="lang">
+						<select onchange="changeMode(this)" class="browser-default custom-select" id="lang">
 							<option value="java">Java</option>
 							<option value="python3">Python</option>
-							<option value="c">C/C++</option>
+							<option value="c">C</option>
+							<option value="cpp">C++</option>
 						</select>
 					</div>
 					<hr/>
@@ -47,14 +47,14 @@
 					<div id="sop" class="hidden output">
 						<i>Output </i>
 					</div>
-					<button onclick="execute()" class="btn btn-primary" id="mynav">Run</button>
-					<button onclick="submit()" class="btn btn-primary" id="mynav">Submit</button>
+					<button onclick="executeCode('run', runHandler)" class="btn btn-primary mynav" id="run">Run</button>
+					<button onclick="executeCode('submit', submitHandler)"class="btn btn-primary mynav" id="submit">Submit</button>
 					<div class="loader"></div>
 					<div id="warning"></div>
 				</div>
 			</div>
 		</div>.
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../scripts/common.js"></script>
 		<script src="../scripts/test.js"></script>
 		<script>

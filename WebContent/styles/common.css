@@ -15,7 +15,7 @@ body {
 	padding: 5px 10px;
 	color: green;
 }
-#mynav {
+.mynav{
 	width:30%;
 	margin: 20px;
 }

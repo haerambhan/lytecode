@@ -9,21 +9,21 @@
 	</head>
 	<body>
 		<div id="card">
-			<h3>Intelligent Code Editor</h3>
+			<h3 >Intelligent Code Editor</h3>
 			<h6 id="name">Create question</h6>
 			<button onclick="logout()" class="btn btn-danger">Logout</button> <br/>
 			<hr />
 			<h5>Create Test</h5>
 			<div class="form-group">
 				<label for="title">Title</label> 
-				<input type="email" class="form-control" id="title" placeholder="Enter Question title" />
+				<input type="text" class="form-control" id="title" placeholder="Enter Question title" />
 			</div>
 			<div class="form-group">
 				<label for="description">Description</label>
 				<textarea class="form-control" id="description" rows="3" placeholder="Enter Description"></textarea>
 			</div>
 			
-			<div id="testcases2"> Select Difficulty
+			<div id="difficulty"> Select Difficulty
 				<div class="form-group">
 					<select class="form-control" name="dificulty" id="difficulty">
 						<option value="Easy">Easy</option>
@@ -33,19 +33,7 @@
 				</div>
 			</div>
 	
-			<div id="testcases2" style="display: none">
-				Select Special test case
-				<div class="form-group">
-					<select class="form-control" name="specialTc" id="specialTc">
-						<option value="None">None</option>
-						<option value="Recursion">Recursion</option>
-						<option value="Loop">Loop</option>
-						<option value="Nested loop">Nested loop</option>
-					</select>
-				</div>
-			</div>
-			<div id="publicTc">
-				Add public testcase
+			<div id="publicTc"> Add public Test case
 				<div id="testcases">
 					<span>#1</span>
 					<div class="form-group">
@@ -56,8 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="tc">
-				Add hidden testcases
+			<div id="tc"> Add hidden Test cases
 				<button onclick="addTestCase()" id="x" class="btn btn-primary">+</button>
 				<div id="testcases">
 					<span>#1</span>

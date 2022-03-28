@@ -1,31 +1,22 @@
-document.getElementById('editor').style.fontSize = '12px';
 var editor = ace.edit('editor', {
 	theme: 'ace/theme/tomorrow_night_blue',
 	mode: 'ace/mode/java',
 	maxLines: 30,
-	minLines: 15,
+	minLines: 17,
 	wrap: true,
 	autoScrollEditorIntoView: true,
 });
 
-var publicTc = {};
-var testcases = [];
-
 function loadTest() {
+	document.getElementById('editor').style.fontSize = '14px';
 	var testId = localStorage.getItem('testId');
 	callAPI('tests/' + testId, 'get', null, function(response){		
 		if(response.code === 2000){
 			var data = response.body;
-			publicTc = data.publicTc;
-			testcases = data.testcases;
 			document.getElementById('title').innerHTML = data.testTitle;
 			document.getElementById('description').innerHTML = data.testDesc;
-			document
-				.querySelectorAll('#ip')
-				.forEach((ele) => (ele.innerHTML = data.publicTc.input));
-			document
-				.querySelectorAll('#op')
-				.forEach((ele) => (ele.innerHTML = data.publicTc.output));
+			document.querySelectorAll('#ip').forEach((ele) => (ele.innerHTML = data.publicTc.input));
+			document.querySelectorAll('#op').forEach((ele) => (ele.innerHTML = data.publicTc.output));
 			return;				
 		}
 		else{
@@ -34,70 +25,55 @@ function loadTest() {
 	});
 };
 
-function changeLang(lang) {
-	editor.session.setMode('ace/mode/' + lang.value);
+function changeMode(lang) {
+	var value = "";
+	if(lang.value === "java"){
+		value = "java"
+	}
+	if(lang.value === "python3"){
+		value = "python";
+	}
+	if(lang.value === "c" || lang.value === "cpp"){
+		value = "c_cpp";
+	}
+	editor.session.setMode('ace/mode/' + value);
 }
 
-async function execute() {
+function executeCode(mode, resultHandler){
+	
 	document.querySelector('.loader').style.display = 'block';
 	document.querySelectorAll('.hidden').forEach((ele) => (ele.style.display = 'none'));
 	document.getElementById('sop').style.display = 'block';
 	document.getElementById('sop').style.color = 'red';
-	document.getElementById('sop').innerHTML = 'Evaluating public test case...';
-	var result = await run(publicTc.input);
-	if (result.trim() == publicTc.output.trim()) {
-		document.getElementById('sop').style.color = 'green';
-		document.getElementById('sop').innerHTML = 'Public test case passed...Evaluating hidden testcases...';
-		var count = 0;
-		var num = 0;
-		for (testcase of testcases) {
-			num++;
-			var op = await run(testcase.input);
-			if (op.trim() === testcase.output.trim()) count++;
-
-			if (num === testcases.length) {
-				if (count === num) {
-					document.getElementById('sop').style.color = 'green';
-				} else {
-					document.getElementById('sop').style.color = 'red';
-				}
-				document.getElementById('sop').style.display = 'block';
-				document.getElementById('sop').innerHTML = `${count} out of ${testcases.length} Hidden test cases passed`;
-				document.querySelector('.loader').style.display = 'none';
-			}
+	document.getElementById('sop').innerHTML = mode === "run" ? 'Evaluating public test case...' : 'Evaluating hidden test cases';
+	var body = {
+		script : editor.getValue(),
+		language : document.getElementById('lang').value
+	}
+	var testId = localStorage.getItem('testId');
+	callAPI('tests/' + testId + '/' + mode, 'post', body, function(response){		
+		if(response.code === 2000){
+			var result = response.body;
+			document.querySelector('.loader').style.display = 'none';		
+			resultHandler(result);
 		}
-	} else {
-		document.querySelector('.loader').style.display = 'none';
+		else{
+			throw response.message;
+		}
+	});
+}
+
+function runHandler(result){
+	if(result.obtained_op.trim() === result.expected_op.trim()){
+		document.getElementById('sop').style.color = 'green';
+		document.getElementById('sop').innerHTML = 'Public test case passed. Click submit to evluate hidden test cases';
+	}
+	else{
 		document.querySelectorAll('.hidden').forEach((ele) => (ele.style.display = 'block'));
-		document.getElementById('sop').innerHTML = result;
+		document.getElementById('sop').innerHTML = result.obtained_op;
 	}
 }
 
-async function run(input) {
-	document.getElementById('mynav').disabled = true;
-	var req = {
-		clientId: 'deaf2972da2610ab080b5ff9f179ed5a',
-		clientSecret: '9ec2445f49c54dc9b12c579959610c0ccfa6cc0f7233e687bf71766c2110b93d',
-		stdin: input,
-		script: '',
-		language: '',
-		versionIndex: '3',
-	};
-
-	req.script = editor.getValue();
-	req.language = document.getElementById('lang').value;
-
-	return fetch('https://ancient-eyrie-49794.herokuapp.com/', {
-		method: 'post',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify(req),
-	})
-	.then((res) => res.json())
-	.then((data) => {
-		document.getElementById('mynav').disabled = false;
-		return data.output;
-	});
-}
-function submit() {
-	// Yet to implement
+function submitHandler(){
+	
 }

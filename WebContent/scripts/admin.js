@@ -40,7 +40,7 @@ function getTestData() {
 		return;
 	}
 	data.title = title.value.trim();
-	data.description = description.value.trim();
+	data.description = description.value;
 	data.difficulty = difficulty.value.trim();
 	data.publicTc.ip = ip.value;
 	data.publicTc.op = op.value;

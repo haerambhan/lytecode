@@ -17,7 +17,7 @@ public class CommonUtil {
 		return projectName;
 	}
 
-	public static JSONObject createSession(HttpServletRequest request, User user) throws IOException {
+	public static JSONObject createSession(HttpServletRequest request, User user) throws Exception {
 		
 		JSONObject userData = new JSONObject();
 		userData.put("userId", user.getUserId());
@@ -30,17 +30,17 @@ public class CommonUtil {
 		return userData;
 	}
 	
-	public static void handleResponse(HttpServletResponse httpResponse, Response responseObj, Object data) {
+	public static void handleResponse(HttpServletResponse httpResponse, Response responseObj, String message, Object data) {
 
 		JSONObject response = new JSONObject();
 		response.put("code", responseObj.getResponseCode());
-		response.put("message", responseObj.getResponseMessage());
+		response.put("message", message == null ? responseObj.getResponseMessage() : message);
 		if(data != null) response.put("body", data);	
+		httpResponse.setContentType("application/json");
 		try {
-			httpResponse.setContentType("application/json");
 			httpResponse.getWriter().print(response.toString());
 			httpResponse.getWriter().flush();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

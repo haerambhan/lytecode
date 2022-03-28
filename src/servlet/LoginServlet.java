@@ -1,11 +1,8 @@
 package servlet;
 
-import java.io.IOException;
-
 import org.json.JSONObject;
 
-import database.DatabaseAccess;
-import jakarta.servlet.ServletException;
+import database.DBUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,23 +15,24 @@ import util.Response;
 public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static DBUtil db = DBUtil.getInstance();
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-		DatabaseAccess db = DatabaseAccess.getInstance();
-		String body = request.getReader().readLine();
-		JSONObject obj = new JSONObject(body);
 		try {
+			String body = request.getReader().readLine();
+			JSONObject obj = new JSONObject(body);
 			String userId = obj.getString("userId");
 			String password = obj.getString("password");
 			User user = db.getUser(userId, password);
 			if (user != null) {
-				CommonUtil.handleResponse(response, Response.SUCCESS, CommonUtil.createSession(request, user));
+				CommonUtil.handleResponse(response, Response.SUCCESS, null, CommonUtil.createSession(request, user));
 			} else {
-				CommonUtil.handleResponse(response, Response.LOGIN_FAILED, null);
+				CommonUtil.handleResponse(response, Response.LOGIN_FAILED, null, null);
 			}
 		} catch (Exception e) {
-			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, null);
+			e.printStackTrace();
+			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, e.getMessage(), null);
 		}
 	}
 }

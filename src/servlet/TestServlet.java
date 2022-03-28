@@ -1,13 +1,11 @@
 package servlet;
 
-import java.io.IOException;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import database.DatabaseAccess;
-import jakarta.servlet.ServletException;
+import database.DBUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Test;
 import util.CommonUtil;
 import util.Response;
+import util.TestExecutionUtil;
 
 @WebServlet("/api/tests/*")
 public class TestServlet extends HttpServlet {
@@ -22,45 +21,71 @@ public class TestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		String path = req.getPathInfo();
-		DatabaseAccess db = DatabaseAccess.getInstance();
-		if (path == null || path.equals("/")) {
-			Set<Test> tests = db.getTests();
-			CommonUtil.handleResponse(resp, Response.SUCCESS, new JSONArray(tests));
-		} else {
-			int testId = Integer.parseInt(path.substring(1));
-			Test test = db.getTest(testId);
-			CommonUtil.handleResponse(resp, Response.SUCCESS, new JSONObject(test));
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp){
+		
+		try {
+			String path = req.getPathInfo();
+			if (path == null || path.equals("/")) {
+				Set<Test> tests = DBUtil.getInstance().getTests();
+				CommonUtil.handleResponse(resp, Response.SUCCESS, null, new JSONArray(tests));
+			} else {
+				String[] tokens = path.split("/");
+				int testId = Integer.parseInt(tokens[1]);		
+				Test test = DBUtil.getInstance().getTest(testId, false);
+				CommonUtil.handleResponse(resp, Response.SUCCESS, null, new JSONObject(test));
+	
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			CommonUtil.handleResponse(resp, Response.INTERNAL_ERROR, e.getMessage(), null);
+		}
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			String body = request.getReader().readLine();
+			String path = request.getPathInfo();
+			JSONObject reqBody = new JSONObject(body);
+			
+			if (path == null || path.equals("/")) {
+				int testId = createTest(reqBody);
+				response.sendRedirect("tests/" + testId);
+			} else {
+				String[] tokens = path.split("/");
+				int testId = Integer.parseInt(tokens[1]);		
+				if(tokens.length == 3 && "run".equals(tokens[2])) {	
+					Test test = DBUtil.getInstance().getTest(testId, false);
+					TestExecutionUtil.runCode(reqBody, response, test);	
+				}
+				if(tokens.length == 3 && "submit".equals(tokens[2])) {
+					Test test = DBUtil.getInstance().getTest(testId, true);
+					TestExecutionUtil.submitCode(reqBody, response, test);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, e.getMessage(), null);
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		DatabaseAccess db = DatabaseAccess.getInstance();
-		String body = request.getReader().readLine();
-		try {
-			JSONObject obj = new JSONObject(body);
-			String title = obj.getString("title");
-			String description = obj.getString("description");
-			String difficulty = obj.getString("difficulty");
-			int testId = db.createTest(title, description, difficulty);
-			JSONObject publicTc = obj.getJSONObject("publicTc");
-			String ip = publicTc.getString("ip");
-			String op = publicTc.getString("op");
 
-			db.addTestCase(ip, op, testId, 1);
-			JSONArray testcases = obj.getJSONArray("testcases");
-			for (int i = 0; i < testcases.length(); i++) {
-				String input = testcases.getJSONObject(i).getString("input");
-				String output = testcases.getJSONObject(i).getString("output");
-				db.addTestCase(input, output, testId, 2);
-			}		
-			response.sendRedirect("tests/" + testId);
-		} catch (Exception e) {
-			e.printStackTrace();
-			CommonUtil.handleResponse(response, Response.INTERNAL_ERROR, null);
-		}
+	private int createTest(JSONObject reqBody) throws Exception {
+		String title = reqBody.getString("title");
+		String description = reqBody.getString("description");
+		String difficulty = reqBody.getString("difficulty");
+		int testId = DBUtil.getInstance().createTest(title, description, difficulty);
+		JSONObject publicTc = reqBody.getJSONObject("publicTc");
+		String ip = publicTc.getString("ip");
+		String op = publicTc.getString("op");
+
+		DBUtil.getInstance().addTestCase(ip, op, testId, 1);
+		JSONArray testcases = reqBody.getJSONArray("testcases");
+		for (int i = 0; i < testcases.length(); i++) {
+			String input = testcases.getJSONObject(i).getString("input");
+			String output = testcases.getJSONObject(i).getString("output");
+			DBUtil.getInstance().addTestCase(input, output, testId, 2);
+		}	
+		return testId;
 	}
 }

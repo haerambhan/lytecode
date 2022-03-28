@@ -1,7 +1,5 @@
 package util;
 
-import java.io.IOException;
-
 import org.json.JSONObject;
 
 import jakarta.servlet.http.HttpServletRequest;

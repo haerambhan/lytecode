@@ -1,5 +1,8 @@
 package util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -10,8 +13,9 @@ import org.json.JSONObject;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Test;
 import model.TestCase;
+import thread.ExecutionTask;
 
-public class TestExecutionUtil {
+public class TestUtil {
 	
 	
 	public static final String API = "https://api.jdoodle.com/v1/execute";
@@ -23,16 +27,20 @@ public class TestExecutionUtil {
 		String code = reqBody.optString("script");
 		String language = reqBody.optString("language");
 		String input = test.getPublicTc().getInput();
-
-		JSONObject result = executeCode(code, language, input);
-		JSONObject response = new JSONObject();
 		
+		ExecutionTask task = new ExecutionTask(code, language, input);
+		task.run();
 		String expected = test.getPublicTc().getOutput();
-		String output = result.optString("output");
+		String output = task.getOutput();
+		
+		if(output == null) {
+			CommonUtil.handleResponse(res, Response.INTERNAL_ERROR, "Code Excecution failed", null);
+			return;
+		}
 
+		JSONObject response = new JSONObject();
 		response.put("expected_op", expected);
 		response.put("obtained_op", output);
-		
 		CommonUtil.handleResponse(res, Response.SUCCESS, null, response);
 	}
 	
@@ -41,45 +49,35 @@ public class TestExecutionUtil {
 		String code = reqBody.optString("script");
 		String language = reqBody.optString("language");
 		int passedTestCases = 0;
-		for(TestCase testCase : test.getTestcases()){
-			
+
+		Map<TestCase,ExecutionTask> tasks = new HashMap<TestCase, ExecutionTask>();
+		
+		for(TestCase testCase : test.getTestcases()) {		
 			String input = testCase.getInput();
-			JSONObject result = executeCode(code, language, input);
-			
+			ExecutionTask task = new ExecutionTask(code, language, input);
+			tasks.put(testCase, task);
+			task.start();
+		}
+		for(TestCase testCase : tasks.keySet()) {
+			tasks.get(testCase).join();			
+		}
+		
+		for(TestCase testCase : tasks.keySet()) {
 			String expected = testCase.getOutput();
-			String output = result.optString("output");
+			String output = tasks.get(testCase).getOutput();
+			
+			if(output == null) {
+				CommonUtil.handleResponse(res, Response.INTERNAL_ERROR, "Code Excecution failed", null);
+				return;
+			}
 			
 			if(expected.trim().equals(output.trim())) {
 				passedTestCases++;
-			}	
+			}
 		}
 		JSONObject response = new JSONObject();
 		response.put("passedTestCases", passedTestCases);
 		response.put("totalTestCases", test.getTestcases().size());
 		CommonUtil.handleResponse(res, Response.SUCCESS, null, response);
-	}
-	
-	public static JSONObject executeCode(String code, String language, String input) throws Exception {
-		
-		JSONObject body = new JSONObject();
-		body.put("clientId", CLIENTID);
-		body.put("clientSecret", CLIENTSECRET);
-		body.put("stdin", input);
-		body.put("script", code);
-		body.put("language", language);
-		body.put("versionIndex", 3);
-		
-		return httpPost(API,body.toString());
-	}
-	
-	public static JSONObject httpPost(String url, String body) throws Exception {
-		
-		HttpClient client = HttpClients.createDefault();
-		HttpPost request = new HttpPost(url);
-		request.setHeader("Content-type", "application/json");
-		request.setEntity(new StringEntity(body));
-		String response = EntityUtils.toString(client.execute(request).getEntity());
-		return new JSONObject(response);
-		
 	}
 }

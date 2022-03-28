@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Test;
 import util.CommonUtil;
 import util.Response;
-import util.TestExecutionUtil;
+import util.TestUtil;
 
 @WebServlet("/api/tests/*")
 public class TestServlet extends HttpServlet {
@@ -56,11 +56,11 @@ public class TestServlet extends HttpServlet {
 				int testId = Integer.parseInt(tokens[1]);		
 				if(tokens.length == 3 && "run".equals(tokens[2])) {	
 					Test test = DBUtil.getInstance().getTest(testId, false);
-					TestExecutionUtil.runCode(reqBody, response, test);	
+					TestUtil.runCode(reqBody, response, test);	
 				}
 				if(tokens.length == 3 && "submit".equals(tokens[2])) {
 					Test test = DBUtil.getInstance().getTest(testId, true);
-					TestExecutionUtil.submitCode(reqBody, response, test);
+					TestUtil.submitCode(reqBody, response, test);
 				}
 			}
 		} catch (Exception e) {

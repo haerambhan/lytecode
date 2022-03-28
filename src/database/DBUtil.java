@@ -88,7 +88,6 @@ public class DBUtil
 		Connection con = null;
 		PreparedStatement pt = null;
 		ResultSet rs = null;
-		System.out.println("CREATE TEST");
 		Integer testId = null;
 
 		try {

@@ -3,11 +3,6 @@ package util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import jakarta.servlet.http.HttpServletResponse;

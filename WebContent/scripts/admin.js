@@ -61,10 +61,8 @@ function addTestCase() {
 	var testcase = document.createElement('div');
 	testcase.appendChild(span);
 	testcase.setAttribute('id', 'testcases');
-	var static = ['Input', 'Output'];
-	static.forEach((type) => {
-		testcase.appendChild(addBox(type));
-	});
+	testcase.appendChild(addBox('Input'));
+	testcase.appendChild(addBox('Output'));
 	document.getElementById('tc').appendChild(testcase);
 }
 

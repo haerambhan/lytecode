@@ -45,7 +45,7 @@ function executeCode(mode, resultHandler){
 	document.querySelectorAll('.hidden').forEach((ele) => (ele.style.display = 'none'));
 	document.getElementById('sop').style.display = 'block';
 	document.getElementById('sop').style.color = 'red';
-	document.getElementById('sop').innerHTML = mode === "run" ? 'Evaluating public test case...' : 'Evaluating hidden test cases';
+	document.getElementById('sop').innerHTML = mode === "run" ? 'Evaluating public test case..' : 'Evaluating hidden test cases..';
 	var body = {
 		script : editor.getValue(),
 		language : document.getElementById('lang').value
@@ -74,6 +74,8 @@ function runHandler(result){
 	}
 }
 
-function submitHandler(){
-	
+function submitHandler(result){
+	var passed = result.passedTestCases;
+	var total = result.totalTestCases;
+	document.getElementById('sop').innerHTML = `${passed} out of ${total} Hidden test cases passed`;
 }

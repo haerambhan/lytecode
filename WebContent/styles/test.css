@@ -41,11 +41,15 @@
 	width: 60%;
 }
 
+
 #description {
-	white-space: pre-wrap;
 	text-align: left;
 }
 
 .hidden2 {
 	display: none;
+}
+
+.formatted {
+	white-space: pre-wrap
 }

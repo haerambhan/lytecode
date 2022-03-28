@@ -47,8 +47,8 @@ function getTestData() {
 	ips.forEach((ip) => {
 		if (ip.value === '' || ops[count].value === '') return;
 		data.testcases.push({
-			input: JSON.stringify(ip.value),
-			output: JSON.stringify(ops[count].value),
+			input: ip.value,
+			output: ops[count].value,
 		});
 		count++;
 	});

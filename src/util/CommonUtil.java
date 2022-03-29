@@ -9,7 +9,7 @@ import model.User;
 
 public class CommonUtil {
 	
-	private static final String projectName = "SmartEditor";
+	private static final String projectName = "LyteCode";
 	
 	public static String getProjectName() {
 		return projectName;

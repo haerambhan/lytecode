@@ -26,7 +26,7 @@ function logout(){
 }
 
 function getProjectName(){
-	return "SmartEditor";
+	return "LyteCode";
 }
 
 function callAPI(api, method, body, responseHandler){

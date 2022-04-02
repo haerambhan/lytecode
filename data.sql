@@ -30,7 +30,7 @@ CREATE TABLE `test` (
   `testDesc` varchar(5000) DEFAULT NULL,
   `testDiff` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`testId`)
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `test` (
 
 LOCK TABLES `test` WRITE;
 /*!40000 ALTER TABLE `test` DISABLE KEYS */;
-INSERT INTO `test` VALUES (103,'Prime number','Write a program to find whether the given number is prime or not.\nA prime number is a number that is not divisible by any other number. A prime number has only 2 factors: 1 and itself.\n\nExample 1:\ninput: 17\noutput: true\nExplanation: 17 is not divisible by any other number\n\nExample 2:\ninput: 35\noutput: false\nExplanation: 35 is divisible by 7 and 5','Easy'),(104,'Factorial','Write a program to calculate the factorial of the given number. The factorial of N is the product of all the numbers less than or equal to N\r \r Example 1:\r input: 5\r output: 120\r Explanation: 5x4x3x2x1 = 120\r \r Example 2:\r input: 4\r output: 24\r Explanation: 4x3x2x1 = 24','Easy');
+INSERT INTO `test` VALUES (105,'Prime number','Write a program to find whether the given number is prime or not.\nA prime number is a number that is not divisible by any other number. A prime number has only 2 factors: 1 and itself.\n\nExample 1:\ninput: 17\noutput: true\nExplanation: 17 is not divisible by any other number\n\nExample 2:\ninput: 35\noutput: false\nExplanation: 35 is divisible by 7 and 5','Easy'),(106,'Factorial','Write a program to calculate the factorial of a given number. The factorial of N is the product of all the numbers less than or equal to N\n \nExample 1:\ninput: 5\noutput: 120\nExplanation: 5x4x3x2x1 = 120\n \nExample 2:\ninput: 4\noutput: 24\nExplanation: 4x3x2x1 = 24','Easy'),(107,'Sum of digits','Write a program to calculate the sum of all the digits in the given integer. The given integer will be non negative and less than 2^32\n\nExample 1:\nInput: 4985\nOutput: 26\nExplanation: 4+9+8+5 = 26\n\nExample 2:\nInput: 32767\nOutput: 25\nExplanation: 3+2+7+6+7 = 25','Medium');
 /*!40000 ALTER TABLE `test` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `testcase` (
   PRIMARY KEY (`testCaseId`),
   KEY `testId` (`testId`),
   CONSTRAINT `testcase_ibfk_1` FOREIGN KEY (`testId`) REFERENCES `test` (`testId`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `testcase` (
 
 LOCK TABLES `testcase` WRITE;
 /*!40000 ALTER TABLE `testcase` DISABLE KEYS */;
-INSERT INTO `testcase` VALUES (210,'4','false',103,1),(211,'\"7919\"','\"true\"',103,2),(212,'\"7920\"','\"false\"',103,2),(213,'\"43201\"','\"true\"',103,2),(214,'\"43200\"','\"false\"',103,2),(215,'\"3\"','\"true\"',103,2),(216,'3','6',104,1),(217,'\"7\"','\"5040\"',104,2),(218,'\"0\"','\"1\"',104,2),(219,'\"9\"','\"362880\"',104,2);
+INSERT INTO `testcase` VALUES (220,'4','false',105,1),(221,'6967','true',105,2),(222,'6968','false',105,2),(223,'19927','true',105,2),(224,'19928','false',105,2),(225,'9','false',105,2),(226,'21','false',105,2),(227,'4','24',106,1),(228,'7','5040',106,2),(229,'0','1',106,2),(230,'9','362880',106,2),(231,'5','120',106,2),(232,'32767','25',107,1),(233,'4985','26',107,2),(234,'11119','13',107,2),(235,'0','0',107,2),(236,'3456','18',107,2),(237,'199954','37',107,2);
 /*!40000 ALTER TABLE `testcase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-28 20:03:34
+-- Dump completed on 2022-04-03  3:53:25

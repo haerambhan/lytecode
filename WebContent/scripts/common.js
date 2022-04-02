@@ -26,7 +26,7 @@ function logout(){
 }
 
 function getProjectName(){
-	return "LyteCode";
+	return "lytecode";
 }
 
 function callAPI(api, method, body, responseHandler){

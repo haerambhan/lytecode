@@ -46,8 +46,8 @@ public class DBUtil
 			pt.executeUpdate();
 			user = new User(userId, userName, userPassword, 2);
 		}finally {
-			pt.close();
-			con.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}
 		return user;
 	}
@@ -78,8 +78,8 @@ public class DBUtil
 			}
 		}
 		finally {
-			pt.close();
-			con.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}
 		return user;
 	}
@@ -97,14 +97,14 @@ public class DBUtil
 			pt.setString(2, description);
 			pt.setString(3, difficulty);
 			pt.executeUpdate();
-			pt.close();
+			if(pt != null) pt.close();
 			pt = con.prepareStatement("select last_insert_id();");
 			rs = pt.executeQuery();
 			rs.next();
 			testId = rs.getInt(1);
 		} finally {
-			pt.close();
-			con.close();		
+			if(pt != null) pt.close();
+			if(con != null) con.close();		
 		}
 		return testId;
 	}
@@ -122,8 +122,8 @@ public class DBUtil
 			pt.setInt(4, testCaseType);
 			pt.executeUpdate();
 		}finally {
-			pt.close();
-			con.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}	
 	}
 
@@ -156,9 +156,9 @@ public class DBUtil
 				
 			}
 		}finally {
-			rs.close();
-			pt.close();
-			con.close();
+			if(rs != null) rs.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}
 		return tests;
 	}
@@ -185,9 +185,9 @@ public class DBUtil
 			String output = p[3];
 			testcase = new TestCase(testCaseId, input, output);
 		}finally {
-			rs.close();
-			pt.close();
-			con.close();
+			if(rs != null) rs.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}
 		return testcase;
 	}
@@ -217,9 +217,9 @@ public class DBUtil
 				testcases.add(new TestCase(testCaseId, input, output));
 			}
 		}finally {
-			rs.close();
-			pt.close();
-			con.close();
+			if(rs != null) rs.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}
 		return testcases;
 	}
@@ -252,9 +252,9 @@ public class DBUtil
 				test.setTestcases(testcases);
 			}
 		} finally {
-			rs.close();
-			pt.close();
-			con.close();
+			if(rs != null) rs.close();
+			if(pt != null) pt.close();
+			if(con != null) con.close();
 		}
 		return test;
 	}

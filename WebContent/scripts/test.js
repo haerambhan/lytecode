@@ -77,5 +77,8 @@ function runHandler(result){
 function submitHandler(result){
 	var passed = result.passedTestCases;
 	var total = result.totalTestCases;
+	if(passed == total){
+		document.getElementById('sop').style.color = 'green';
+	}
 	document.getElementById('sop').innerHTML = `${passed} out of ${total} Hidden test cases passed`;
 }

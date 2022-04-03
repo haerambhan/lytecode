@@ -1,8 +1,8 @@
 package util;
 
-import org.json.JSONObject;
+import javax.servlet.http.HttpSession;
 
-import jakarta.servlet.http.HttpSession;
+import org.json.JSONObject;
 
 public class AuthorizationUtil {
 	
@@ -50,4 +50,5 @@ public class AuthorizationUtil {
 	private static boolean isCommonPrivateURL(String path) {
 		return path.equals("/api/logout") || path.startsWith("/api/tests");
 	}
+
 }

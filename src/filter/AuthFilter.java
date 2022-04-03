@@ -24,7 +24,7 @@ public class AuthFilter implements Filter {
 			String path = req.getRequestURI().substring(req.getContextPath().length());
 			HttpSession session = req.getSession(false);
 
-			if (isAssetURL(path) || AuthorizationUtil.isAuthorized(path, session)) {
+			if (isAssetURL(path) || AuthorizationUtil.isAuthorized(path, session) || v2API(path)) {
 				chain.doFilter(req, res);
 			} else {
 				res.sendRedirect("/" + CommonUtil.getProjectName() + "/" + AuthorizationUtil.getRedirectPath(session));
@@ -32,6 +32,10 @@ public class AuthFilter implements Filter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean v2API(String path) {
+		return path.startsWith("/api/v2");
 	}
 
 	private boolean isAssetURL(String path) {

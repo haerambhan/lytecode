@@ -15,7 +15,7 @@ public class DBUtil
 	public static Connection getConnection() throws Exception {
 		Connection c = null;
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		c = DriverManager.getConnection("jdbc:mysql://localhost:3306/editor?useSSL=false", "root","root");
+		c = DriverManager.getConnection("jdbc:mysql://database-1.cv9idvaobmel.us-east-1.rds.amazonaws.com:3306/editor?useSSL=false", "root","password");
 		return c;
 	}
 	
